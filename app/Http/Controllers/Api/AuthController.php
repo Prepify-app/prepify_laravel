@@ -5,13 +5,15 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegistrationRequest;
+use App\Http\Requests\ResendEmailVerificationLinkRequest;
+use App\Http\Requests\VerifyEmailRequest;
 use App\Http\Services\EmailVerificationService;
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 
 class AuthController extends Controller
 {
-    public function __construct(private EmailVerificationService $service)
+    public function __construct(public EmailVerificationService $service)
     {
 
     }
@@ -54,6 +56,34 @@ class AuthController extends Controller
     }
 
     /**
+     * Resend verification link
+     */
+
+    public function resendEmailVerificationLink(ResendEmailVerificationLinkRequest $request)
+    {
+        return $this->service->resendLink($request->email);
+    }
+
+    /**
+     * Verify user Email
+     */
+
+    public function verifyUserEmail(VerifyEmailRequest $request)
+    {
+        return $this->service->verifyEmail($request->email, $request->token);
+    }
+
+    /**
+     * Logout Method
+     */
+    public function logout()
+    {
+        auth()->logout();
+
+        return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    /**
      * Return JWT access token
      */
     public function responseWithToken($token, $user)
@@ -62,7 +92,8 @@ class AuthController extends Controller
             'status' => 'success',
             'user' => $user,
             'access_token' => $token,
-            'type' => 'bearer'
+            'type' => 'bearer',
+            'expires_in' => Config::get('jwt.ttl') * 7 // 7 дней
         ]);
     }
 }
