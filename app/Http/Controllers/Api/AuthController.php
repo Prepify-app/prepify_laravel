@@ -10,6 +10,7 @@ use App\Http\Requests\VerifyEmailRequest;
 use App\Http\Services\EmailVerificationService;
 use App\Models\User;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -33,6 +34,15 @@ class AuthController extends Controller
                 'message' => 'Invalid credentials',
             ], 401);
         }
+    }
+
+    /**
+     * Resend verification link
+     */
+    public function resendEmailVerificatioLink(ResendEmailVerificationLinkRequest $request)
+    {
+        Log::info('Resend email verification link request received', ['email' => $request->email]);
+        return $this->service->resendLink($request->email);
     }
 
     /**

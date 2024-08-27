@@ -2,38 +2,43 @@
 
 namespace App\Http\Services;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use function Laravel\Prompts\password;
+use Illuminate\Support\Facades\Response;
 
 class PasswordService
 {
     private function validateCurrentPassword($current_password)
     {
-        if (!password_verify($current_password, auth()->user()->password)) {
-            return response()->json([
+        if (!Hash::check($current_password, auth()->user()->password)) {
+            return Response::json([
                 'status' => 'failed',
-                'message' => 'Password did not match the current password'
-            ])->send();
+                'message' => "Password didn't match the current password",
+            ], 400);
         }
-        exit();
     }
 
     public function changePassword($data)
     {
         $this->validateCurrentPassword($data['current_password']);
+
         $updatePassword = auth()->user()->update([
             'password' => Hash::make($data['password'])
         ]);
+
         if ($updatePassword) {
-            return response()->json([
+            return Response::json([
                 'status' => 'success',
-                'message' => 'password updated successfully'
+                'message' => 'Password updated successfully'
             ]);
         } else {
-            return response()->json([
+            return Response::json([
                 'status' => 'failed',
-                'message' => 'An error occurred while changing your password'
-            ]);
+                'message' => 'An error occurred while updating password'
+            ], 500);
         }
     }
+
+
+
 }
