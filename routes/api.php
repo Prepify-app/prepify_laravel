@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Profile\PasswordController;
@@ -33,3 +35,9 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/change_password', [PasswordController::class, 'ChangeUserPassword']);
     Route::post('auth/logout', [AuthController::class, 'logout']);
 });
+
+Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+Route::get('users', [UserController::class, 'index']);

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PasswordResetToken extends Model
 {
-    public $timestamps = false; // Désactiver les timestamps automatiques
+    public $timestamps = false; // Disable automatic timestamps
     protected $primaryKey = 'email';
     public $incrementing = false;
     protected $keyType = 'string';
