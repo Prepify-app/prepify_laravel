@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
+use App\Enums\UserLevel;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -22,6 +23,12 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'place_of_work',
+        'level',
+        'country',
+        'tech_stack',
+        'age',
+        'about',
         'image_path',
     ];
 
@@ -43,6 +50,7 @@ class User extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'level' => UserLevel::class,
     ];
 
     public function getJWTIdentifier()
