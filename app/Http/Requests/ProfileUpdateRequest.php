@@ -17,7 +17,14 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique('users')->ignore($this->user()->id)],
+            'place_of_work' => ['nullable', 'string', 'max:255'],
+            'level' => ['nullable', 'in:junior,middle,senior'],
+            'country' => ['nullable', 'string', 'max:255'],
+            'tech_stack' => ['nullable', 'string', 'max:255'],
+            'age' => ['nullable', 'integer', 'min:0'],
+            'about' => ['nullable', 'string'],
+            'image' => ['nullable', 'image', 'max:2048'],
         ];
     }
 }
