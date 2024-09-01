@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\UserLevel;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class ProfileUpdateRequest extends FormRequest
 {
@@ -19,7 +21,7 @@ class ProfileUpdateRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique('users')->ignore($this->user()->id)],
             'place_of_work' => ['nullable', 'string', 'max:255'],
-            'level' => ['nullable', 'in:junior,middle,senior'],
+            'level' => ['nullable', new Enum(UserLevel::class)],
             'country' => ['nullable', 'string', 'max:255'],
             'tech_stack' => ['nullable', 'string', 'max:255'],
             'age' => ['nullable', 'integer', 'min:0'],

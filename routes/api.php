@@ -37,9 +37,9 @@ Route::middleware(['auth:api'])->group(function () {
 });
 
 Route::middleware('auth:api')->group(function () {
-    Route::get('/api/profile', [ProfileController::class, 'edit'])->name('api.profile.edit');
-    Route::patch('/api/profile', [ProfileController::class, 'update'])->name('api.profile.update');
-    Route::delete('/api/profile', [ProfileController::class, 'destroy'])->name('api.profile.destroy');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('api.profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('api.profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('api.profile.destroy');
 });
 
 Route::get('users', [UserController::class, 'index']);

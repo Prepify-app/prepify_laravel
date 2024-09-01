@@ -53,6 +53,10 @@ class User extends Authenticatable implements JWTSubject
         'level' => UserLevel::class,
     ];
 
+    protected $attributes = [
+        'level' => null,
+    ];
+
     public function getJWTIdentifier()
     {
         return $this->getKey();

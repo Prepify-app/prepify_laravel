@@ -2,18 +2,14 @@
 
 namespace App\Enums;
 
-class UserLevel
+enum UserLevel: string
 {
-    const JUNIOR = 'junior';
-    const MIDDLE = 'middle';
-    const SENIOR = 'senior';
+    case JUNIOR = 'junior';
+    case MIDDLE = 'middle';
+    case SENIOR = 'senior';
 
-    public static function all()
+    public function getValue(): string
     {
-        return [
-            self::JUNIOR,
-            self::MIDDLE,
-            self::SENIOR,
-        ];
+        return $this->value;
     }
 }

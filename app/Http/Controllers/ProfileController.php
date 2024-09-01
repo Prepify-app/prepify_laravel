@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserLevel;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -30,6 +31,10 @@ class ProfileController extends Controller
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('profile_images', 'public');
             $user->image_path = $path;
+        }
+
+        if ($request->has('level')) {
+            $user->level = UserLevel::from($request->input('level'));
         }
 
         if ($user->isDirty('email')) {
