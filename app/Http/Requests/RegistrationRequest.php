@@ -3,8 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Psy\Util\Json;
-use Symfony\Component\HttpFoundation\JsonResponse;
+
+
 class RegistrationRequest extends FormRequest
 {
     /**
@@ -27,5 +27,16 @@ class RegistrationRequest extends FormRequest
             'email' => ['required', 'email:filter', 'unique:users'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
         ];
+    }
+
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'email' => strtolower($this->email),
+        ]);
+
+        $this->merge([
+            'name' => ucfirst(strtolower($this->name)),
+        ]);
     }
 }
