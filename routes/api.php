@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -43,3 +44,5 @@ Route::middleware('auth:api')->group(function () {
 });
 
 Route::get('users', [UserController::class, 'index']);
+
+Route::resource('roles', RoleController::class);
