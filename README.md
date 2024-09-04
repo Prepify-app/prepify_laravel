@@ -12,3 +12,4 @@
 - php artisan migrate
 - php artisan jwt:secret
 - php artisan serve
+- php artisan db:seed
