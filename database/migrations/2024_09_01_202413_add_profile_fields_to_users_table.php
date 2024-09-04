@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('place_of_work')->nullable()->after('image_path');
-            $table->enum('level', ['junior', 'middle', 'senior'])->nullable()->after('place_of_work');
+            $table->string('level')->nullable()->after('place_of_work');
             $table->string('country')->nullable()->after('level');
             $table->string('stack')->nullable()->after('country');
             $table->integer('age')->nullable()->after('stack');
