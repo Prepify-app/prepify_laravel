@@ -4,12 +4,12 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
-use App\Enums\UserLevel;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -51,12 +51,16 @@ class User extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'level' => UserLevel::class,
     ];
 
     protected $attributes = [
         'level' => null,
     ];
+
+    public function userLevel(): BelongsTo
+    {
+        return $this->belongsTo(UserLevel::class);
+    }
 
     public function roles(): BelongsToMany
     {
