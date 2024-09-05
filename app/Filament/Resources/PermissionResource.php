@@ -19,7 +19,9 @@ class PermissionResource extends Resource
 {
     protected static ?string $model = Permission::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-lock-open';
+
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
@@ -28,6 +30,8 @@ class PermissionResource extends Resource
                 TextInput::make('name')
                     ->minLength(2)
                     ->maxLength(255)
+                    ->required()
+                    ->unique(ignoreRecord: true)
             ]);
     }
 
@@ -42,6 +46,7 @@ class PermissionResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

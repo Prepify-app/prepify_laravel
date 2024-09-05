@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\RoleResource\Pages;
 use App\Filament\Resources\RoleResource\RelationManagers;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
 use Spatie\Permission\Models\Role;
@@ -19,7 +20,9 @@ class RoleResource extends Resource
 {
     protected static ?string $model = Role::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-adjustments-vertical';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -28,6 +31,12 @@ class RoleResource extends Resource
                 TextInput::make('name')
                     ->minLength(2)
                     ->maxLength(255)
+                    ->unique(ignoreRecord: true),
+
+                Select::make('permissions')
+                    ->multiple()
+                    ->relationship('permissions', 'name')
+                    ->preload()
             ]);
     }
 
@@ -35,6 +44,7 @@ class RoleResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id')->sortable(),
                 TextColumn::make('name')
             ])
             ->filters([
@@ -42,6 +52,7 @@ class RoleResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

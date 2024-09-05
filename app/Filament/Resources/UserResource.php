@@ -3,28 +3,39 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Resources\UserResource\Pages\CreateUser;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
+use App\Models\UserLevel;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
+use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Hash;
+use Rinvex\Country\CountryLoader;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_level_id')
-                    ->numeric(),
+                Select::make('user_level_id')
+                    ->label('User Level')
+                    ->options(UserLevel::all()->pluck('name', 'id'))
+                    ->searchable()
+                    ->required(),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -33,11 +44,14 @@ class UserResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\FileUpload::make('image_path')
+                    ->label('User Image')
                     ->image(),
                 Forms\Components\TextInput::make('place_of_work')
                     ->maxLength(255),
-                Forms\Components\TextInput::make('country')
-                    ->maxLength(255),
+                Select::make('country')
+                    ->label('Country')
+                    ->options(array_map(fn($country) => $country['name'], CountryLoader::countries()))
+                    ->required(),
                 Forms\Components\TextInput::make('stack')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('age')
@@ -48,8 +62,14 @@ class UserResource extends Resource
                 Forms\Components\DateTimePicker::make('email_verified_at'),
                 Forms\Components\TextInput::make('password')
                     ->password()
-                    ->required()
+                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->required(fn ($livewire) => ($livewire instanceof CreateUser))
                     ->maxLength(255),
+                Select::make('roles')
+                    ->multiple()
+                    ->relationship('roles', 'name')
+                    ->preload()
             ]);
     }
 
@@ -58,13 +78,14 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user_level_id')
-                    ->numeric()
+                    ->label('Grade')
+                    ->formatStateUsing(fn($state) => UserLevel::find($state)?->name)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('image_path'),
+
                 Tables\Columns\TextColumn::make('place_of_work')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('country')
@@ -91,6 +112,7 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

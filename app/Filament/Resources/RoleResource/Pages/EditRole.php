@@ -16,4 +16,10 @@ class EditRole extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+
+    protected function getSavedNotificationTitle(): ?string
+    {
+        return 'Role updated';
+    }
 }
