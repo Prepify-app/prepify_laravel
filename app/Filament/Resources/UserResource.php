@@ -23,8 +23,8 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('user_level_id')
-                    ->relationship('userLevel', 'name'),
+                Forms\Components\TextInput::make('user_level_id')
+                    ->numeric(),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -57,7 +57,7 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('userLevel.name')
+                Tables\Columns\TextColumn::make('user_level_id')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')

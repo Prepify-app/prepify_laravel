@@ -14,9 +14,11 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
-        "php-open-source-saver/jwt-auth": "^2.3"
+        "php-open-source-saver/jwt-auth": "^2.3",
+        "spatie/laravel-permission": "^6.9"
     },
     "require-dev": {
+        "doctrine/dbal": "^3.9",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",
