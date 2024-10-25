@@ -11,5 +11,6 @@
 - composer install
 - php artisan migrate
 - php artisan jwt:secret
+- php artisan storage:link
 - php artisan serve
 - php artisan db:seed

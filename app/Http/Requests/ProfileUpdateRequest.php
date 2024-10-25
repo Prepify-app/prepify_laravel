@@ -21,12 +21,12 @@ class ProfileUpdateRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique('users')->ignore($this->user()->id)],
             'place_of_work' => ['nullable', 'string', 'max:255'],
-            'level' => ['nullable', new Enum(UserLevel::class)],
+            'level' => ['nullable|integer'],
             'country' => ['nullable', 'string', 'max:255'],
             'tech_stack' => ['nullable', 'string', 'max:255'],
             'age' => ['nullable', 'integer', 'min:0'],
             'about' => ['nullable', 'string'],
-            'image' => ['nullable', 'image', 'max:2048'],
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 }

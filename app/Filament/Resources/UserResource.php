@@ -45,7 +45,9 @@ class UserResource extends Resource
                     ->maxLength(255),
                 Forms\Components\FileUpload::make('image_path')
                     ->label('User Image')
-                    ->image(),
+                    ->image()
+                    ->disk('public')
+                    ->directory('profile_images'),
                 Forms\Components\TextInput::make('place_of_work')
                     ->maxLength(255),
                 Select::make('country')
