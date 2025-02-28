@@ -7,16 +7,21 @@ use App\Models\User;
 use App\Notifications\ForgetPasswordNotification;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
+use App\Services\ResponseService;
 
 class PasswordResetService
 {
-    public function sendResetLink(string $email): void
+    public function sendResetLink(string $email)
     {
         $user = User::where('email', $email)->first();
 
         if ($user) {
             $token = $this->generateResetToken($email);
             Notification::send($user, new ForgetPasswordNotification($token));
+            return response()->json([
+                'status' => StatusService::SUCCESS,
+                'message' => ResponseService::PASSWORD_RESET_LINK_SENT,
+            ]);
         }
     }
 
@@ -40,7 +45,7 @@ class PasswordResetService
         if (!$tokenRecord || $tokenRecord->created_at->addMinutes(60) < now()) {
             return response()->json([
                 'status' => 'failed',
-                'message' => 'Token is invalid or expired'
+                'message' => ResponseService::INVALID_RESET_TOKEN
             ], 400);
         }
 
@@ -51,8 +56,8 @@ class PasswordResetService
         $tokenRecord->delete();
 
         return response()->json([
-            'status' => 'success',
-            'message' => 'Password reset successfully'
+            'status' => StatusService::SUCCESS,
+            'message' => ResponseService::PASSWORD_RESET_SUCCESS,
         ]);
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Services\ResponseService;
 
 class ProfileController extends Controller
 {
@@ -45,7 +46,7 @@ class ProfileController extends Controller
         $user->save();
 
         return response()->json([
-            'message' => 'Profile updated successfully.',
+            'message' => ResponseService::PROFILE_UPDATED,
             'user' => $user,
         ]);
     }
@@ -69,7 +70,7 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return response()->json([
-            'message' => 'Account deleted successfully.',
+            'message' => ResponseService::ACCOUNT_DELETED,
         ]);
     }
 }

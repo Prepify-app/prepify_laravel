@@ -11,6 +11,9 @@ use App\Http\Services\EmailVerificationService;
 use App\Models\User;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
+use App\Services\ResponseService;
+use Illuminate\Support\Facades\Auth;
+use App\Services\StatusService;
 
 class AuthController extends Controller
 {
@@ -25,13 +28,19 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return response()->json([
+                'status' => StatusService::FAILED,
+                'message' => ResponseService::INVALID_CREDENTIALS,
+            ], 401);
+        }
         $token = auth()->attempt($request->validated());
         if ($token) {
             return $this->responseWithToken($token, auth()->user());
         } else {
             return response()->json([
-                'status' => 'failed',
-                'message' => 'Invalid credentials',
+                'status' => StatusService::FAILED,
+                'message' => ResponseService::INVALID_CREDENTIALS,
             ], 401);
         }
     }
@@ -51,18 +60,24 @@ class AuthController extends Controller
 
     public function register(RegistrationRequest $request)
     {
-        $user = User::create($request->validated());
-        if ($user) {
-            $this->service->sendVerificationLink($user);
-            $token = auth()->login($user);
-            return $this->responseWithToken($token, $user);
-        } else {
+        try {
+            $user = User::create($request->validated());
+            if ($user) {
+                $this->service->sendVerificationLink($user);
+                $token = auth()->login($user);
+                return $this->responseWithToken($token, $user);
+            } else {
+                return response()->json([
+                    'status' => StatusService::FAILED,
+                    'message' => ResponseService::USER_CREATION_ERROR,
+                ], 500);
+            }
+        } catch (\Exception $e) {
             return response()->json([
-                'status' => 'failed',
-                'message' => 'Something went wrong while trying to create user'
+                'status' => StatusService::FAILED,
+                'message' => ResponseService::USER_CREATION_ERROR,
             ], 500);
         }
-
     }
 
     /**
@@ -90,7 +105,7 @@ class AuthController extends Controller
     {
         auth()->logout();
 
-        return response()->json(['message' => 'Successfully logged out']);
+        return response()->json(['message' => ResponseService::LOGOUT_SUCCESS]);
     }
 
     /**
@@ -99,7 +114,7 @@ class AuthController extends Controller
     public function responseWithToken($token, $user)
     {
         return response()->json([
-            'status' => 'success',
+            'status' => StatusService::SUCCESS,
             'user' => $user,
             'access_token' => $token,
             'type' => 'bearer',
